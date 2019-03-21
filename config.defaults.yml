@@ -5,7 +5,7 @@ logging:
 scheduler:
   defaults:
     interval: 60000
-  bucketscount: 16
+  maxconcurrency: 16
 
 tasks:
   defaults:
