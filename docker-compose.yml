@@ -1,0 +1,17 @@
+version: '3.7'
+
+networks:
+  network:
+
+services:
+  backend-stats:
+    image: alekns/tinyrstats:latest
+    restart: always
+    build:
+      context: .
+    networks:
+      network:
+        aliases:
+          - tinyrstats
+    ports:
+      - 18080:8080

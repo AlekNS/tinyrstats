@@ -1,0 +1,21 @@
+logging:
+  console:
+    level: debug
+
+scheduler:
+  defaults:
+    interval: 60000
+  bucketscount: 16
+
+tasks:
+  defaults:
+    timeout: 5000
+  maxconcurrency: 48
+  queuesize: 96
+  maxpending: 128
+  repository:
+    bucketscount: 16
+
+endpoints:
+  http:
+    bind: :8080

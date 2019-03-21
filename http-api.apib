@@ -1,0 +1,99 @@
+FORMAT: 1A
+HOST: http://localhost:8080/
+
+
+# Tiny Resource Statistics API v1
+
+To monitor resources and gathering of some statistics.
+
+
+
+# Group Users Tasks
+
+## Tasks [/api/v1/tasks/actions/query?url&responsetime]
+
+### Task Status [GET]
+
++ Arguments
+
+    + url (string) Query by site URL.
+    + responsetime (string) Query by response time. Should be one of: min, max.
+
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "id": "c60e9073081b43578c656e32c35ca293",
+                "url": "http://ya.ru",
+                "interval": 60000,
+                "timeout": 5000,
+                "method": "GET",
+                "headers": {
+                    "Accept": ["text/html"]
+                },
+                "status": {
+                    "lastTime": 1553076236000,
+                    "statusCode": 200,
+                    "responseTime": 4000,
+                    "responseHeaders": {
+                        "Content-Type": ["text/html"]
+                    }
+                }
+            }
+        }
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "id": "c60e9073081b43578c656e32c35ca293",
+                "url": "http://ya.ru",
+                "interval": 60000,
+                "timeout": 5000,
+                "method": "GET",
+                "headers": {
+                    "Accept": ["text/html"]
+                },
+                "status": {
+                    "lastTime": 1553076236000,
+                    "error": {
+                        "message": "timeout",
+                        "isTimeout": true
+                    }
+                }
+            }
+        }
+
+
+
+# Group Admin
+
+## Task Statistics [/api/v1/statistics/tasks/queries]
+
+### Tasks Statistics [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json)
+
+        {
+            "data": [
+                "id": "c60e9073081b43578c656e32c35ca293",
+                "url": "http://ya.ru",
+                "requestsStatistics": {
+                    "byUrlCount": 8,
+                    "minResponseCount": 10,
+                    "maxResponseCount": 16
+                }
+            ]
+        }

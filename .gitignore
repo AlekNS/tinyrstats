@@ -1,0 +1,9 @@
+.env
+bin/*
+!.gitkeep
+vendor/*
+.vscode
+debug
+*.log
+config.local.yml
+config.yml
