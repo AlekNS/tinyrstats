@@ -33,8 +33,7 @@ func TestScheduleTaskSpec(t *testing.T) {
 			Return(nil).
 			Times(1)
 
-		scheduler := NewIntervalScheduler(ctx,
-			log.NewNopLogger(),
+		scheduler := NewIntervalScheduler(log.NewNopLogger(),
 			&config.SchedulerSettings{
 				MaxConcurrency:  4,
 				DefaultInterval: -10, // for immediately

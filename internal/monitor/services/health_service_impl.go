@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/alekns/tinyrstats/internal/config"
 	"github.com/alekns/tinyrstats/internal/monitor"
 	"github.com/alekns/tinyrstats/pkg/helpers/network"
 	"github.com/go-kit/kit/log"
@@ -16,7 +17,8 @@ const contentLengthReaderBufferSize = 1 << 16
 
 // HTTPHealthService .
 type HTTPHealthService struct {
-	logger log.Logger
+	settings *config.TasksSettings
+	logger   log.Logger
 }
 
 func getTimeWithMilliseconds() int64 {
@@ -42,9 +44,14 @@ func (rh *HTTPHealthService) CheckStatus(ctx context.Context, request *monitor.H
 
 	level.Debug(logger).Log("msg", "request HTTP resource")
 
-	// @TODO: Use DNS resolve name first
+	timeout := request.Timeout
+	if timeout < 1 {
+		timeout = int64(rh.settings.DefaultTimeout)
+	}
+
+	// @TODO: Use DNS resolve name first method
 	response, err := network.HTTPRequestAndGetResponse(ctx,
-		time.Duration(request.Timeout)*time.Millisecond,
+		time.Duration(timeout)*time.Millisecond,
 		request.Method,
 		request.URL,
 		bytes.NewReader([]byte(request.Body)),
@@ -80,8 +87,9 @@ func (rh *HTTPHealthService) CheckStatus(ctx context.Context, request *monitor.H
 }
 
 // NewHTTPHealthService .
-func NewHTTPHealthService(logger log.Logger) *HTTPHealthService {
+func NewHTTPHealthService(settings *config.TasksSettings, logger log.Logger) *HTTPHealthService {
 	return &HTTPHealthService{
-		logger: log.With(logger, "service", "HTTPHealthService"),
+		settings: settings,
+		logger:   log.With(logger, "service", "HTTPHealthService"),
 	}
 }

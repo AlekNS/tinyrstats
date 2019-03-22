@@ -30,7 +30,7 @@ func (ct *ConcurrentTaskExecutor) Start(ctx context.Context) error {
 }
 
 // Stop .
-func (ct *ConcurrentTaskExecutor) Stop() error {
+func (ct *ConcurrentTaskExecutor) Stop(ctx context.Context) error {
 	if err := ct.processor.Stop(); err != nil {
 		return err
 	}
@@ -40,7 +40,7 @@ func (ct *ConcurrentTaskExecutor) Stop() error {
 }
 
 // NewConcurretTaskExecutor .
-func NewConcurretTaskExecutor(settings *config.Settings,
+func NewConcurretTaskExecutor(settings *config.TasksSettings,
 	logger log.Logger,
 	taskResultConsumer runner.Consumer) *ConcurrentTaskExecutor {
 
@@ -49,7 +49,7 @@ func NewConcurretTaskExecutor(settings *config.Settings,
 	return &ConcurrentTaskExecutor{
 		logger: log.With(logger, "service", svcName),
 		processor: runner.NewConcurrentProcessor(
-			settings.Tasks.TaskQueueSize, settings.Tasks.MaxConcurrency, settings.Tasks.MaxPending),
+			settings.TaskQueueSize, settings.MaxConcurrency, settings.MaxPending),
 
 		taskResultConsumer: taskResultConsumer,
 		errorsHandler:      NewLoggerRunnerException(logger, svcName),

@@ -11,5 +11,6 @@ var rootCmd = &cobra.Command{
 
 // RootCommand .
 func RootCommand() *cobra.Command {
+	rootCmd.AddCommand(serveCommand())
 	return rootCmd
 }

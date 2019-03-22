@@ -6,9 +6,9 @@ type (
 		// Emit event data.
 		Emit(args ...interface{}) error
 		// Subscribe on event data.
-		On(HandlerOnFunc) (HandlerOffFunc, error)
+		On(*HandlerOnFunc) (HandlerOffFunc, error)
 		// Unsubscribe from event data.
-		Off(HandlerOnFunc) error
+		Off(*HandlerOnFunc) error
 		// Unsubscribe all subscribers.
 		OffAll() error
 	}

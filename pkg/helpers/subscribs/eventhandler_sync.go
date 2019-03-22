@@ -75,3 +75,8 @@ func (o *syncEventHandler) OffAll() error {
 
 	return nil
 }
+
+// NewSyncEventHandler creates sync event handler.
+func NewSyncEventHandler() EventHandler {
+	return &syncEventHandler{}
+}

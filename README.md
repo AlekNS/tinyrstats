@@ -50,4 +50,4 @@ Run
 
 For host: `$ ./bin/tinyrstats --config-file ./config.common.yml serve`
 You may override config by environment variables. Set logging level for example:
-For host: `$ TRS_LOGGING_CONSOLE_LEVEL=info ./bin/tinyrstats --config-file ./config.defaults.yml serve --resources-from-file sites.example.txt`
+For host: `$ TRS_LOGGING_CONSOLE_LEVEL=info ./bin/tinyrstats --config-file ./config.defaults.yml serve --preload-from-file sites.example.txt`

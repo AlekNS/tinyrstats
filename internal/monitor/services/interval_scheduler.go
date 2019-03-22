@@ -218,8 +218,7 @@ func (st *IntervalScheduler) init() {
 }
 
 // NewIntervalScheduler creates interval scheduler.
-func NewIntervalScheduler(ctx context.Context,
-	logger log.Logger,
+func NewIntervalScheduler(logger log.Logger,
 	settings *config.SchedulerSettings,
 	consumer runner.Consumer) *IntervalScheduler {
 

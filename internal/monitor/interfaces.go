@@ -11,12 +11,17 @@ import (
 type (
 	// TaskRepository .
 	TaskRepository interface {
+		// GetByResponseTimeMinOrMax .
 		GetByResponseTimeMinOrMax(context.Context, bool) (*Task, error)
+		// GetByID .
 		GetByID(context.Context, TaskID) (*Task, error)
 
+		// Save .
 		Save(context.Context, *Task) error
 
+		// Delete .
 		Delete(context.Context, TaskID) error
+		// DeleteAll .
 		DeleteAll(context.Context)
 	}
 
@@ -27,26 +32,35 @@ type (
 
 	// ScheduleTaskService .
 	ScheduleTaskService interface {
+		// Schedule .
 		Schedule(context.Context, TaskID, *ScheduleHealthTask) error
+		// Cancel .
 		Cancel(context.Context, TaskID) error
+		// CancelAll .
 		CancelAll(context.Context) error
 	}
 
 	// Events all processable events.
 	Events interface {
+		// TaskQueriedByURL .
 		TaskQueriedByURL() subscribs.EventHandler
+		// TaskQueriedByMinResponse .
 		TaskQueriedByMinResponse() subscribs.EventHandler
+		// TaskQueriedByMaxResponse .
 		TaskQueriedByMaxResponse() subscribs.EventHandler
 	}
 
 	// TaskApp .
 	TaskApp interface {
-		Create(context.Context, *CreateTaskCommand) (*CreateTaskResult, error)
+		// CreateAndRun .
+		CreateAndRun(context.Context, *CreateTaskCommand) (*CreateTaskResult, error)
+		// QueryBy .
 		QueryBy(context.Context, *QueryTask) (*QueryTaskResult, error)
 	}
 
 	// StatsApp .
 	StatsApp interface {
+		// QueryBy .
 		QueryBy(context.Context, *QueryStatistic) (*QueryStatisticResult, error)
 	}
 )

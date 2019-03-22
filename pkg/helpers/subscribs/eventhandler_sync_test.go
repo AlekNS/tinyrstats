@@ -3,7 +3,7 @@ package subscribs
 import "testing"
 
 func TestEventHandlerOnAndEmit(t *testing.T) {
-	evh := &syncEventHandler{}
+	evh := NewSyncEventHandler()
 	counter := 0
 
 	evh.Emit(10)
@@ -24,7 +24,7 @@ func TestEventHandlerOnAndEmit(t *testing.T) {
 }
 
 func TestEventHandlerOffAndEmit(t *testing.T) {
-	evh := &syncEventHandler{}
+	evh := NewSyncEventHandler()
 	counter := 0
 
 	handler := func(val ...interface{}) {
@@ -48,7 +48,7 @@ func TestEventHandlerOffAndEmit(t *testing.T) {
 }
 
 func TestEventHandlerOffAllAndEmit(t *testing.T) {
-	evh := &syncEventHandler{}
+	evh := NewSyncEventHandler()
 	counter := 0
 
 	handler := func(val ...interface{}) {

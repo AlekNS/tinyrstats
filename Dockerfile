@@ -21,4 +21,4 @@ COPY --from=builder /home/tinyrstats/bin/tinyrstats .
 
 EXPOSE 8080
 ENTRYPOINT ["/entrypoint.sh", "tinyrstats"]
-CMD ["resources", "serve", "--resources-from-file", "./sites.example.txt"]
+CMD ["resources", "serve", "--preload-from-file", "./sites.example.txt"]

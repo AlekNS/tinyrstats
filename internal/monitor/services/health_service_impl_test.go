@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/alekns/tinyrstats/internal/config"
 	"github.com/alekns/tinyrstats/internal/monitor"
 	"github.com/alekns/tinyrstats/pkg/helpers/network"
 	"github.com/go-kit/kit/log"
@@ -51,7 +52,9 @@ const httpSuccessError = 500
 
 func TestHTTPResourceServiceSpec(t *testing.T) {
 	Convey("Given created http health service", t, func(c C) {
-		svc := NewHTTPHealthService(log.NewNopLogger())
+		svc := NewHTTPHealthService(&config.TasksSettings{
+			DefaultTimeout: 2000,
+		}, log.NewNopLogger())
 
 		c.Convey("When request is valid", func(c C) {
 			bringUpServer(httpSuccessStatus)
