@@ -8,9 +8,9 @@ This is tiny demo project (single service solution), to able monitor resources a
 Features
 =============
 
-- [ ] [HTTP REST API](https://github.com/alekns/tinyrstats/blob/master/http-api.apib)
-- [ ] Monitoring of HTTP endpoints
-- [ ] Resource statistics (response time, timeouts, errors, etc.)
+- [x] [HTTP REST API](https://github.com/alekns/tinyrstats/blob/master/http-api.apib)
+- [x] Monitoring of HTTP endpoints
+- [x] Resource statistics (response time, timeouts, errors, etc.)
 - [ ] Endpoints statistics
 - [ ] Requests tracing
 
@@ -51,3 +51,5 @@ Run
 For host: `$ ./bin/tinyrstats --config-file ./config.common.yml serve`
 You may override config by environment variables. Set logging level for example:
 For host: `$ TRS_LOGGING_CONSOLE_LEVEL=info ./bin/tinyrstats --config-file ./config.defaults.yml serve --preload-from-file sites.example.txt`
+
+Use `--default-protocol` to select between `http` and `https`.

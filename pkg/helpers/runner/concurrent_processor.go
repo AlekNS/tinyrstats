@@ -80,8 +80,7 @@ func (p *ConcurrentProcessor) Start(ctx context.Context, consumer Consumer, erro
 
 					err = consumer.Accept(ctx, task)
 					if err != nil {
-						err = errors.OnError(err)
-						if err != nil {
+						if errors.OnError(err) != nil {
 							p.Stop()
 						}
 					}

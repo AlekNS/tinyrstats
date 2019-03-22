@@ -10,13 +10,13 @@ To monitor resources and gathering of some statistics.
 
 # Group Users Tasks
 
-## Tasks [/api/v1/tasks/actions/query?url&responsetime]
+## Tasks [/api/v1/tasks/actions/query?resource&responsetime]
 
 ### Task Status [GET]
 
 + Arguments
 
-    + url (string) Query by site URL.
+    + resource (string) Query by site URL.
     + responsetime (string) Query by response time. Should be one of: min, max.
 
 + Request (application/json)
@@ -89,7 +89,9 @@ To monitor resources and gathering of some statistics.
         {
             "data": {
                 "requestsStatistics": {
-                    "byUrlCount": 8,
+                    "resources": {
+                        "ya.ru": 10,
+                    },
                     "minResponseCount": 10,
                     "maxResponseCount": 16
                 }

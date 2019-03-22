@@ -94,6 +94,14 @@ func (tr *taskRepositoryInMemoryImpl) Save(ctx context.Context, task *monitor.Ta
 	return nil
 }
 
+func isTaskValidForStats(task *monitor.Task) bool {
+	if task.Status == nil {
+		return false
+	}
+
+	return task.Status.Error == nil || !task.Status.Error.IsTimeout
+}
+
 // updateMinMaxResponseTasks update min and max response tasks after update or delete.
 func (tr *taskRepositoryInMemoryImpl) updateMinMaxResponseTasks(task *monitor.Task, isUpdate bool) {
 	if task.Status == nil {
@@ -109,10 +117,10 @@ func (tr *taskRepositoryInMemoryImpl) updateMinMaxResponseTasks(task *monitor.Ta
 		if maxTask == nilResponseTask {
 			tr.maxResponseTask.Store(task)
 		}
-		if minTask.Status != nil && minTask.Status.ResponseTime > task.Status.ResponseTime {
+		if isTaskValidForStats(minTask) && minTask.Status.ResponseTime > task.Status.ResponseTime {
 			tr.minResponseTask.Store(task)
 		}
-		if maxTask.Status != nil && maxTask.Status.ResponseTime < task.Status.ResponseTime {
+		if isTaskValidForStats(maxTask) && maxTask.Status.ResponseTime < task.Status.ResponseTime {
 			tr.maxResponseTask.Store(task)
 		}
 		return
@@ -136,7 +144,8 @@ func (tr *taskRepositoryInMemoryImpl) updateMinMaxResponseTasks(task *monitor.Ta
 	if statTaskIndex > 0 {
 		for _, bucket := range tr.buckets {
 			for _, task := range bucket {
-				if task.Status == nil {
+				// @TODO: || task.Status.Error != nil
+				if !isTaskValidForStats(task) {
 					continue
 				}
 				if statTaskIndex == 1 && (minTask == nilResponseTask || task.Status.ResponseTime < minTask.Status.ResponseTime) {

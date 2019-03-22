@@ -34,6 +34,8 @@ func HTTPRequestAndGetResponse(requestContext context.Context, timeout time.Dura
 	httVerb, url string, body io.Reader, headers map[string][]string) (response *http.Response, err error) {
 
 	tr := &http.Transport{
+		TLSHandshakeTimeout:   timeout,
+		ExpectContinueTimeout: timeout,
 		IdleConnTimeout:       timeout,
 		ResponseHeaderTimeout: timeout,
 		DisableKeepAlives:     true,
@@ -46,6 +48,10 @@ func HTTPRequestAndGetResponse(requestContext context.Context, timeout time.Dura
 	if err != nil {
 		return nil, err
 	}
+
+	ctx, cancel := context.WithTimeout(requestContext, timeout)
+	defer cancel()
+	request = request.WithContext(ctx)
 
 	request.Header = headers
 
@@ -66,9 +72,6 @@ func HTTPRequestAndGetResponse(requestContext context.Context, timeout time.Dura
 			Error:    err,
 		}
 	}()
-
-	ctx, cancel := context.WithTimeout(requestContext, timeout)
-	defer cancel()
 
 	select {
 	case <-ctx.Done():

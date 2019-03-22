@@ -1,4 +1,4 @@
-package helpers
+package tasks
 
 import (
 	"bufio"
@@ -11,7 +11,7 @@ import (
 )
 
 // ReadTasksFromCsvFile reads and creates tasks from csv file.
-func ReadTasksFromCsvFile(filePath string) ([]*monitor.ScheduleHealthTask, error) {
+func ReadTasksFromCsvFile(protocol, filePath string) ([]*monitor.ScheduleHealthTask, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,8 @@ func ReadTasksFromCsvFile(filePath string) ([]*monitor.ScheduleHealthTask, error
 		results = append(results, &monitor.ScheduleHealthTask{
 			Interval: 0,
 			Task: &monitor.HealthTask{
-				URL: row[0],
+				URL:    fmt.Sprintf("%s://%s", protocol, row[0]),
+				Method: "GET",
 			},
 		})
 	}

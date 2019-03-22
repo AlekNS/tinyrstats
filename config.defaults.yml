@@ -12,10 +12,15 @@ tasks:
     timeout: 5000
   maxconcurrency: 48
   queuesize: 96
-  maxpending: 128
+  maxpending: 256
   repository:
     bucketscount: 16
+
+stats:
+  bucketscount: 32
 
 endpoints:
   http:
     bind: :8080
+  metrics:
+    bind: :8081

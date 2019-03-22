@@ -56,7 +56,7 @@ type (
 
 	// CreateTaskCommand .
 	CreateTaskCommand struct {
-		HealthTask
+		ScheduleHealthTask
 	}
 
 	// CreateTaskResult .
@@ -79,13 +79,14 @@ type (
 		Task
 	}
 
-	// QueryStatistic is dummy, need for extension in future.
-	QueryStatistic struct{}
+	// QueryCallStatistic is dummy, need for extension in future.
+	QueryCallStatistic struct{}
 
-	// QueryStatisticResult .
-	QueryStatisticResult struct {
-		ByURLCount       int `json:"byUrlCount"`
-		minResponseCount int `json:"minResponseCount"`
-		maxResponseCount int `json:"maxResponseCount"`
+	// QueryCallStatisticResult .
+	QueryCallStatisticResult struct {
+		TotalCount       int            `json:"totalCount"`
+		Resources        StatsHostsInfo `json:"resourcesCounts"`
+		MinResponseCount int            `json:"minResponseCount"`
+		MaxResponseCount int            `json:"maxResponseCount"`
 	}
 )

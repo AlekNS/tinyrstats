@@ -248,6 +248,84 @@ func (mr *MockEventsMockRecorder) TaskQueriedByMaxResponse() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TaskQueriedByMaxResponse", reflect.TypeOf((*MockEvents)(nil).TaskQueriedByMaxResponse))
 }
 
+// MockStatsService is a mock of StatsService interface
+type MockStatsService struct {
+	ctrl     *gomock.Controller
+	recorder *MockStatsServiceMockRecorder
+}
+
+// MockStatsServiceMockRecorder is the mock recorder for MockStatsService
+type MockStatsServiceMockRecorder struct {
+	mock *MockStatsService
+}
+
+// NewMockStatsService creates a new mock instance
+func NewMockStatsService(ctrl *gomock.Controller) *MockStatsService {
+	mock := &MockStatsService{ctrl: ctrl}
+	mock.recorder = &MockStatsServiceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockStatsService) EXPECT() *MockStatsServiceMockRecorder {
+	return m.recorder
+}
+
+// GetAllHosts mocks base method
+func (m *MockStatsService) GetAllHosts() StatsHostsInfo {
+	ret := m.ctrl.Call(m, "GetAllHosts")
+	ret0, _ := ret[0].(StatsHostsInfo)
+	return ret0
+}
+
+// GetAllHosts indicates an expected call of GetAllHosts
+func (mr *MockStatsServiceMockRecorder) GetAllHosts() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllHosts", reflect.TypeOf((*MockStatsService)(nil).GetAllHosts))
+}
+
+// GetMinMax mocks base method
+func (m *MockStatsService) GetMinMax() (int32, int32) {
+	ret := m.ctrl.Call(m, "GetMinMax")
+	ret0, _ := ret[0].(int32)
+	ret1, _ := ret[1].(int32)
+	return ret0, ret1
+}
+
+// GetMinMax indicates an expected call of GetMinMax
+func (mr *MockStatsServiceMockRecorder) GetMinMax() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMinMax", reflect.TypeOf((*MockStatsService)(nil).GetMinMax))
+}
+
+// AddHost mocks base method
+func (m *MockStatsService) AddHost(arg0 string, arg1 int) {
+	m.ctrl.Call(m, "AddHost", arg0, arg1)
+}
+
+// AddHost indicates an expected call of AddHost
+func (mr *MockStatsServiceMockRecorder) AddHost(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddHost", reflect.TypeOf((*MockStatsService)(nil).AddHost), arg0, arg1)
+}
+
+// AddMinMax mocks base method
+func (m *MockStatsService) AddMinMax(arg0 bool, arg1 int32) {
+	m.ctrl.Call(m, "AddMinMax", arg0, arg1)
+}
+
+// AddMinMax indicates an expected call of AddMinMax
+func (mr *MockStatsServiceMockRecorder) AddMinMax(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddMinMax", reflect.TypeOf((*MockStatsService)(nil).AddMinMax), arg0, arg1)
+}
+
+// DeleteHost mocks base method
+func (m *MockStatsService) DeleteHost(arg0 string) {
+	m.ctrl.Call(m, "DeleteHost", arg0)
+}
+
+// DeleteHost indicates an expected call of DeleteHost
+func (mr *MockStatsServiceMockRecorder) DeleteHost(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteHost", reflect.TypeOf((*MockStatsService)(nil).DeleteHost), arg0)
+}
+
 // MockTaskApp is a mock of TaskApp interface
 type MockTaskApp struct {
 	ctrl     *gomock.Controller
@@ -271,17 +349,17 @@ func (m *MockTaskApp) EXPECT() *MockTaskAppMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method
-func (m *MockTaskApp) Create(arg0 context.Context, arg1 *CreateTaskCommand) (*CreateTaskResult, error) {
-	ret := m.ctrl.Call(m, "Create", arg0, arg1)
+// CreateAndRun mocks base method
+func (m *MockTaskApp) CreateAndRun(arg0 context.Context, arg1 *CreateTaskCommand) (*CreateTaskResult, error) {
+	ret := m.ctrl.Call(m, "CreateAndRun", arg0, arg1)
 	ret0, _ := ret[0].(*CreateTaskResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Create indicates an expected call of Create
-func (mr *MockTaskAppMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockTaskApp)(nil).Create), arg0, arg1)
+// CreateAndRun indicates an expected call of CreateAndRun
+func (mr *MockTaskAppMockRecorder) CreateAndRun(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAndRun", reflect.TypeOf((*MockTaskApp)(nil).CreateAndRun), arg0, arg1)
 }
 
 // QueryBy mocks base method
@@ -321,9 +399,9 @@ func (m *MockStatsApp) EXPECT() *MockStatsAppMockRecorder {
 }
 
 // QueryBy mocks base method
-func (m *MockStatsApp) QueryBy(arg0 context.Context, arg1 *QueryStatistic) (*QueryStatisticResult, error) {
+func (m *MockStatsApp) QueryBy(arg0 context.Context, arg1 *QueryCallStatistic) (*QueryCallStatisticResult, error) {
 	ret := m.ctrl.Call(m, "QueryBy", arg0, arg1)
-	ret0, _ := ret[0].(*QueryStatisticResult)
+	ret0, _ := ret[0].(*QueryCallStatisticResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

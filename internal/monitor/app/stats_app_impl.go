@@ -14,25 +14,55 @@ type statsAppImpl struct {
 	settings *config.Settings
 	logger   log.Logger
 
-	events monitor.Events
+	statsService monitor.StatsService
+	events       monitor.Events
 }
 
-// Create .
-func (ta *statsAppImpl) QueryBy(ctx context.Context, query *monitor.QueryStatistic) (*monitor.QueryStatisticResult, error) {
-	logger := log.With(ta.logger, "method", "QueryBy")
+// QueryBy .
+func (sa *statsAppImpl) QueryBy(ctx context.Context, query *monitor.QueryCallStatistic) (*monitor.QueryCallStatisticResult, error) {
+	logger := log.With(sa.logger, "method", "QueryBy")
 
 	level.Debug(logger).Log("msg", "QueryBy")
 
-	return &monitor.QueryStatisticResult{}, nil
+	minCount, maxCount := sa.statsService.GetMinMax()
+	allHosts := sa.statsService.GetAllHosts()
+	totalHosts := 0 // int(minCount) + int(maxCount)
+	for _, value := range allHosts {
+		totalHosts += value
+	}
+
+	return &monitor.QueryCallStatisticResult{
+		TotalCount:       totalHosts,
+		MinResponseCount: int(minCount),
+		MaxResponseCount: int(maxCount),
+		Resources:        allHosts,
+	}, nil
 }
 
 func newStatsApp(settings *config.Settings,
 	logger log.Logger,
+	statsService monitor.StatsService,
 	events monitor.Events) *statsAppImpl {
 
+	hostHandler := func(args ...interface{}) {
+		statsService.AddHost(args[0].(string), 1)
+	}
+	events.TaskQueriedByURL().On(&hostHandler)
+
+	minHandler := func(args ...interface{}) {
+		statsService.AddMinMax(false, 1)
+	}
+	events.TaskQueriedByMinResponse().On(&minHandler)
+
+	maxHandler := func(args ...interface{}) {
+		statsService.AddMinMax(true, 1)
+	}
+	events.TaskQueriedByMaxResponse().On(&maxHandler)
+
 	return &statsAppImpl{
-		logger:   log.With(logger, "service", "TaskApp"),
-		settings: settings,
-		events:   events,
+		logger:       log.With(logger, "service", "TaskApp"),
+		settings:     settings,
+		statsService: statsService,
+		events:       events,
 	}
 }

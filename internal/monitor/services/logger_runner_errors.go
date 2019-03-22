@@ -15,7 +15,7 @@ type (
 // OnProduceError .
 func (le *loggerRunnerErrors) OnError(err error) error {
 	level.Error(le.logger).Log("err", err.Error())
-	return err
+	return nil // don't propagate error
 }
 
 // NewLoggerRunnerException .

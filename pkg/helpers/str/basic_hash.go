@@ -16,5 +16,9 @@ func BasicBytesHash(bytes []byte) int {
 		val ^= int(n)
 	}
 
+	if val < 0 {
+		val = -val
+	}
+
 	return val
 }

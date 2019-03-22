@@ -20,11 +20,11 @@ func FromViperSchedulerSettings(v *viper.Viper) *SchedulerSettings {
 	)
 
 	// Setup defaults
-	v.SetDefault(kdefaultinterval, 60000)
+	v.SetDefault(kdefaultinterval, 60)
 	v.SetDefault(kmaxconcurrency, 16)
 
 	// Validations
-	if v.GetInt(kdefaultinterval) < 1000 {
+	if v.GetInt(kdefaultinterval) < 1 {
 		panic(kdefaultinterval + " has too low value")
 	}
 

@@ -50,6 +50,20 @@ type (
 		TaskQueriedByMaxResponse() subscribs.EventHandler
 	}
 
+	// StatsHostsInfo .
+	StatsHostsInfo = map[string]int
+
+	// StatsService gathering statistics of the requests
+	StatsService interface {
+		GetAllHosts() StatsHostsInfo
+		GetMinMax() (int32, int32)
+
+		AddHost(string, int)
+		AddMinMax(bool, int32)
+
+		DeleteHost(string)
+	}
+
 	// TaskApp .
 	TaskApp interface {
 		// CreateAndRun .
@@ -61,6 +75,6 @@ type (
 	// StatsApp .
 	StatsApp interface {
 		// QueryBy .
-		QueryBy(context.Context, *QueryStatistic) (*QueryStatisticResult, error)
+		QueryBy(context.Context, *QueryCallStatistic) (*QueryCallStatisticResult, error)
 	}
 )

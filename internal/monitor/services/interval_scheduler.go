@@ -150,6 +150,8 @@ func (st *IntervalScheduler) Stop(ctx context.Context) error {
 
 // Schedule enqueue of task.
 func (st *IntervalScheduler) Schedule(ctx context.Context, taskID monitor.TaskID, args *monitor.ScheduleHealthTask) error {
+	logger := log.With(st.logger, "method", "Schedule", "taskId", taskID)
+
 	workerIndex := str.BasicStrHash(string(taskID)) % st.settings.MaxConcurrency
 
 	interval := args.Interval
@@ -164,12 +166,14 @@ func (st *IntervalScheduler) Schedule(ctx context.Context, taskID monitor.TaskID
 
 	heap.Push(st.items[workerIndex], &intervalScheduleItem{
 		id:         string(args.Task.ID),
-		scheduleAt: getNextScheduleTime(interval), // @TODO: Is need to run task immediately!?
+		scheduleAt: getNextScheduleTime(0), // @TODO: Is need to run task immediately!?
 		interval:   interval,
 		task:       args.Task,
 	})
 
 	st.mtxs[workerIndex].Unlock()
+
+	level.Debug(logger).Log("msg", "place task")
 
 	return nil
 }
@@ -188,22 +192,30 @@ func (st *IntervalScheduler) remove(taskID monitor.TaskID, workerIndex int) erro
 
 // Cancel stops a task.
 func (st *IntervalScheduler) Cancel(ctx context.Context, taskID monitor.TaskID) error {
+	logger := log.With(st.logger, "method", "Cancel", "taskId", taskID)
+
 	workerIndex := str.BasicStrHash(string(taskID)) % st.settings.MaxConcurrency
 
 	st.mtxs[workerIndex].Lock()
 	defer st.mtxs[workerIndex].Unlock()
+
+	level.Debug(logger).Log("msg", "cancel task")
 
 	return st.remove(taskID, workerIndex)
 }
 
 // CancelAll stops all tasks.
 func (st *IntervalScheduler) CancelAll(ctx context.Context) error {
+	logger := log.With(st.logger, "method", "CancelAll")
+
 	for i := 0; i < st.settings.MaxConcurrency; i++ {
 		st.mtxs[i].Lock()
 		defer st.mtxs[i].Unlock()
 	}
 
 	st.init()
+
+	level.Debug(logger).Log("msg", "complete")
 
 	return nil
 }

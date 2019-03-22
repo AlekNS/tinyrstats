@@ -19,11 +19,11 @@ const testRequestURL = "http://127.0.0.1:12234/"
 
 var server *http.Server
 
-func bringUpServer(status int) {
+func bringUpServer(status, waitMs int) {
 	var wait = make(chan struct{})
 	var mux = http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		time.Sleep(50 * time.Millisecond)
+		time.Sleep(time.Duration(waitMs) * time.Millisecond)
 		w.Header().Add("TestHeader", "TestValue")
 		if req.Method == "POST" {
 			body, _ := ioutil.ReadAll(req.Body)
@@ -57,7 +57,7 @@ func TestHTTPResourceServiceSpec(t *testing.T) {
 		}, log.NewNopLogger())
 
 		c.Convey("When request is valid", func(c C) {
-			bringUpServer(httpSuccessStatus)
+			bringUpServer(httpSuccessStatus, 10)
 			c.Reset(func() {
 				tearDownServer()
 			})
@@ -77,7 +77,7 @@ func TestHTTPResourceServiceSpec(t *testing.T) {
 		})
 
 		c.Convey("When server return error status code", func(c C) {
-			bringUpServer(httpSuccessError)
+			bringUpServer(httpSuccessError, 10)
 			c.Reset(func() {
 				tearDownServer()
 			})
@@ -99,7 +99,7 @@ func TestHTTPResourceServiceSpec(t *testing.T) {
 		})
 
 		c.Convey("When request has too low timeout value", func(c C) {
-			bringUpServer(httpSuccessStatus)
+			bringUpServer(httpSuccessStatus, 100)
 			c.Reset(func() {
 				tearDownServer()
 			})
@@ -107,7 +107,7 @@ func TestHTTPResourceServiceSpec(t *testing.T) {
 			c.Convey("The response should has error values with true of isTimeout", func(c C) {
 				status, err := svc.CheckStatus(context.Background(), &monitor.HealthTask{
 					URL:     testRequestURL,
-					Timeout: 1,
+					Timeout: 15,
 					Method:  "GET",
 				})
 

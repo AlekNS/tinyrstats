@@ -73,8 +73,10 @@ func (app *RegistryImpl) init(
 
 	app.scheduler = services.NewIntervalScheduler(logger, settings.Scheduler, app.taskConsumer)
 
-	app.taskApp = newTaskApp(settings, logger, app.taskRepository)
-	app.statsApp = newStatsApp(settings, logger, app.events)
+	app.taskApp = newTaskApp(settings, logger, app.events, app.scheduler, app.taskRepository)
+
+	statsService := services.NewStatsServiceImpl(settings.Stats)
+	app.statsApp = newStatsApp(settings, logger, statsService, app.events)
 
 	return app
 }
@@ -97,6 +99,9 @@ func (app *RegistryImpl) Start(ctx context.Context) error {
 
 // Stop .
 func (app *RegistryImpl) Stop(ctx context.Context) error {
+	app.events.TaskQueriedByURL().OffAll()
+	app.events.TaskQueriedByMinResponse().OffAll()
+	app.events.TaskQueriedByMaxResponse().OffAll()
 	app.scheduler.Stop(ctx)
 	app.taskConsumer.Stop(ctx)
 

@@ -3,11 +3,14 @@ module github.com/alekns/tinyrstats
 go 1.12
 
 require (
+	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
+	github.com/davecgh/go-spew v1.1.1
 	github.com/go-kit/kit v0.8.0
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/mock v1.2.0
 	github.com/golang/protobuf v1.3.1
+	github.com/gorilla/mux v1.7.0
 	github.com/nats-io/go-nats v1.7.2
 	github.com/nats-io/nkeys v0.0.2 // indirect
 	github.com/nats-io/nuid v1.0.0 // indirect
@@ -22,7 +25,7 @@ require (
 	github.com/spf13/viper v1.3.2
 	github.com/stretchr/testify v1.3.0
 	github.com/uber/jaeger-client-go v2.15.0+incompatible
-	github.com/uber/jaeger-lib v2.0.0+incompatible
+	github.com/uber/jaeger-lib v1.5.0+incompatible
 	golang.org/x/net v0.0.0-20190320064053-1272bf9dcd53 // indirect
 	google.golang.org/grpc v1.19.1
 )
