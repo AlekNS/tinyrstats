@@ -1,4 +1,4 @@
-package worker
+package monitor
 
 import (
 	"net/http"
@@ -8,16 +8,17 @@ type (
 	// TaskID .
 	TaskID string
 
+	// Task .
 	Task struct {
 		*HealthTask
 
-		ID     TaskID            `json:"id"`
 		Status *HealthTaskStatus `json:"status,omitempty"`
 	}
 
 	// HealthTask .
 	HealthTask struct {
-		Timeout int64       `json:"timeout"`
+		ID      TaskID `json:"id"`
+		Timeout int64  `json:"timeout"`
 
 		URL     string      `json:"url"`
 		Method  string      `json:"method"`
@@ -47,6 +48,43 @@ type (
 	// ScheduleHealthTask .
 	ScheduleHealthTask struct {
 		Interval int         `json:"interval,omitempty"`
-		Task     *HealthTask `json:"task,omitempty"`
+		Task     *HealthTask `json:"task"`
+	}
+
+	// Applications
+
+	// CreateTaskCommand .
+	CreateTaskCommand struct {
+		HealthTask
+	}
+
+	// CreateTaskResult .
+	CreateTaskResult struct {
+		ID string `json:"id"`
+	}
+
+	// QueryResponseTimeType .
+	QueryResponseTimeType int
+
+	// QueryTask .
+	QueryTask struct {
+		ByHost string `json:"host"`
+
+		ByResponseTime QueryResponseTimeType `json:"responseTime"`
+	}
+
+	// QueryTaskResult .
+	QueryTaskResult struct {
+		Task
+	}
+
+	// QueryStatistic is dummy, need for extension in future.
+	QueryStatistic struct{}
+
+	// QueryStatisticResult .
+	QueryStatisticResult struct {
+		ByURLCount       int `json:"byUrlCount"`
+		minResponseCount int `json:"minResponseCount"`
+		maxResponseCount int `json:"maxResponseCount"`
 	}
 )
