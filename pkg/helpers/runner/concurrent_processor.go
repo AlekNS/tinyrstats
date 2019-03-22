@@ -13,10 +13,12 @@ type ConcurrentProcessor struct {
 
 	enqueueLimiter int32
 	enqueueCount   int32
-	consumersCount int
 
-	consumerQueue chan interface{}
-	stopProcessor chan struct{}
+	consumersCount    int
+	consumerQueueSize int
+
+	consumerQueueCh chan interface{}
+	stopProcessorCh chan struct{}
 
 	isStopped bool
 }
@@ -25,7 +27,7 @@ type ConcurrentProcessor struct {
 func (p *ConcurrentProcessor) Stop() error {
 	p.mtx.Lock()
 	if !p.isStopped {
-		close(p.stopProcessor)
+		close(p.stopProcessorCh)
 		p.isStopped = true
 	}
 	p.mtx.Unlock()
@@ -46,7 +48,8 @@ func (p *ConcurrentProcessor) Enqueue(ctx context.Context, task interface{}) err
 
 	select {
 	case <-ctx.Done():
-	case p.consumerQueue <- task:
+		return ctx.Err()
+	case p.consumerQueueCh <- task:
 	}
 
 	return nil
@@ -54,6 +57,10 @@ func (p *ConcurrentProcessor) Enqueue(ctx context.Context, task interface{}) err
 
 // Start set of workers.
 func (p *ConcurrentProcessor) Start(ctx context.Context, consumer Consumer, errors ErrorHandler) error {
+	p.consumerQueueCh = make(chan interface{}, p.consumerQueueSize)
+	p.stopProcessorCh = make(chan struct{})
+	p.isStopped = false
+
 	p.waitConsumers.Add(p.consumersCount)
 
 	for worker := 0; worker < p.consumersCount; worker++ {
@@ -62,12 +69,12 @@ func (p *ConcurrentProcessor) Start(ctx context.Context, consumer Consumer, erro
 		stopWorker:
 			for {
 				select {
-				case <-p.stopProcessor:
+				case <-p.stopProcessorCh:
 					break stopWorker
 				case <-ctx.Done():
 					break stopWorker
 
-				case task, ok := <-p.consumerQueue:
+				case task, ok := <-p.consumerQueueCh:
 					if !ok {
 						break stopWorker
 					}
@@ -103,7 +110,7 @@ func NewConcurrentProcessor(consumerQueueSize, consumersCount, enqueueLimiter in
 	return &ConcurrentProcessor{
 		enqueueLimiter: int32(enqueueLimiter),
 		consumersCount: consumersCount,
-		consumerQueue:  make(chan interface{}, consumerQueueSize),
-		stopProcessor:  make(chan struct{}),
+
+		consumerQueueSize: consumerQueueSize,
 	}
 }
