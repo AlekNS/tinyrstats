@@ -29,17 +29,13 @@ type (
 )
 
 var (
-	nilResponseTask = &monitor.Task{HealthTask: &monitor.HealthTask{}}
+	nilResponseTask = &monitor.Task{}
 )
 
 // cloneTask not safe (skip headers)
 func cloneTask(src *monitor.Task) *monitor.Task {
 	dst := &monitor.Task{}
 	*dst = *src
-	if src.HealthTask != nil {
-		dst.HealthTask = &monitor.HealthTask{}
-		*dst.HealthTask = *src.HealthTask
-	}
 	if src.Status != nil {
 		dst.Status = &monitor.HealthTaskStatus{}
 		// @TODO: +Copy Header

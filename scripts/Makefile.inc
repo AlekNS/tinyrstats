@@ -25,7 +25,7 @@ bin/%: $(go_src) | dep_ensure
 	@echo "Done"
 
 test: | dep_ensure
-	@go test -cpu 2 -parallel 2 -cover -race ./internal/... ./pkg/...
+	@go test -cpu 2 -v -parallel 2 -cover -race ./internal/... ./pkg/...
 	@echo "Done"
 
 clean:
@@ -48,4 +48,4 @@ format:
 $(cmd): bin/$(cmd)
 	@echo "Done $@"
 
-PHONY: usage clean linter format build dep_ensure $(cmd) buildindocker
+PHONY: usage clean linter format build dep_ensure $(cmd)

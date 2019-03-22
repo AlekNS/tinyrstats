@@ -10,15 +10,16 @@ type (
 
 	// Task .
 	Task struct {
-		*HealthTask
+		HealthTask
 
 		Status *HealthTaskStatus `json:"status,omitempty"`
 	}
 
 	// HealthTask .
 	HealthTask struct {
-		ID      TaskID `json:"id"`
-		Timeout int64  `json:"timeout"`
+		ID TaskID `json:"id"`
+
+		Timeout int64 `json:"timeout"`
 
 		URL     string      `json:"url"`
 		Method  string      `json:"method"`

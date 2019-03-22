@@ -17,7 +17,7 @@ func getPreFilledTaskRepository(cnt int) monitor.TaskRepository {
 
 	for i := 0; i < cnt; i++ {
 		t = &monitor.Task{
-			HealthTask: &monitor.HealthTask{ID: monitor.TaskID(strconv.Itoa(i))},
+			HealthTask: monitor.HealthTask{ID: monitor.TaskID(strconv.Itoa(i))},
 			Status: &monitor.HealthTaskStatus{
 				ResponseTime: int64(i + 1),
 			},

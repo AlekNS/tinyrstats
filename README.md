@@ -9,6 +9,10 @@ Features
 =============
 
 - [ ] [HTTP REST API](https://github.com/alekns/tinyrstats/blob/master/http-api.apib)
+- [ ] Monitoring of HTTP endpoints
+- [ ] Resource statistics (response time, timeouts, errors, etc.)
+- [ ] Endpoints statistics
+- [ ] Requests tracing
 
 
 Build
@@ -39,3 +43,11 @@ Linter
 ========
 
 `$ make linter`
+
+
+Run
+========
+
+For host: `$ ./bin/tinyrstats --config-file ./config.common.yml serve`
+You may override config by environment variables. Set logging level for example:
+For host: `$ TRS_LOGGING_CONSOLE_LEVEL=info ./bin/tinyrstats --config-file ./config.defaults.yml serve --resources-from-file sites.example.txt`

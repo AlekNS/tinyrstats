@@ -16,7 +16,7 @@ type SchedulerSettings struct {
 func FromViperSchedulerSettings(v *viper.Viper) *SchedulerSettings {
 	const (
 		kdefaultinterval = "scheduler.defaults.interval"
-		kmaxconcurrency    = "scheduler.maxconcurrency"
+		kmaxconcurrency  = "scheduler.maxconcurrency"
 	)
 
 	// Setup defaults
@@ -34,6 +34,6 @@ func FromViperSchedulerSettings(v *viper.Viper) *SchedulerSettings {
 
 	return &SchedulerSettings{
 		DefaultInterval: v.GetInt(kdefaultinterval),
-		MaxConcurrency:    v.GetInt(kmaxconcurrency),
+		MaxConcurrency:  v.GetInt(kmaxconcurrency),
 	}
 }

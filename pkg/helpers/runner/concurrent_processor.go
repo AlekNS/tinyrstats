@@ -19,8 +19,7 @@ type ConcurrentProcessor struct {
 
 	consumerQueueCh chan interface{}
 	stopProcessorCh chan struct{}
-
-	isStopped bool
+	isStopped       bool
 }
 
 // Stop processing of the tasks.
@@ -108,9 +107,8 @@ func (p *ConcurrentProcessor) Wait() {
 // NewConcurrentProcessor create concurrent processor.
 func NewConcurrentProcessor(consumerQueueSize, consumersCount, enqueueLimiter int) *ConcurrentProcessor {
 	return &ConcurrentProcessor{
-		enqueueLimiter: int32(enqueueLimiter),
-		consumersCount: consumersCount,
-
+		enqueueLimiter:    int32(enqueueLimiter),
+		consumersCount:    consumersCount,
 		consumerQueueSize: consumerQueueSize,
 	}
 }
