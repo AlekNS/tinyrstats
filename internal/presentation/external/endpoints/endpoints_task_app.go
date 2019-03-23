@@ -16,6 +16,7 @@ func makeTaskQueryEndpoint(registry app.Registry) endpoint.Endpoint {
 
 	return func(ctx context.Context, reqRaw interface{}) (interface{}, error) {
 		req := reqRaw.(*monitor.QueryTask)
-		return taskApp.QueryBy(ctx, req)
+
+		return wrapResponseToData(taskApp.QueryBy(ctx, req))
 	}
 }

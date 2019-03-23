@@ -9,7 +9,7 @@ import (
 )
 
 type (
-	// ConcurrentTaskExecutor .
+	// ConcurrentTaskExecutor processing a tasks in concurrent mode.
 	ConcurrentTaskExecutor struct {
 		logger    log.Logger
 		processor *runner.ConcurrentProcessor
@@ -19,17 +19,17 @@ type (
 	}
 )
 
-// Accept .
+// Accept task from producer and enqueue it.
 func (ct *ConcurrentTaskExecutor) Accept(ctx context.Context, results ...interface{}) error {
 	return ct.processor.Enqueue(ctx, results[0])
 }
 
-// Start .
+// Start workers.
 func (ct *ConcurrentTaskExecutor) Start(ctx context.Context) error {
 	return ct.processor.Start(ctx, ct.taskResultConsumer, ct.errorsHandler)
 }
 
-// Stop .
+// Stop workers.
 func (ct *ConcurrentTaskExecutor) Stop(ctx context.Context) error {
 	if err := ct.processor.Stop(); err != nil {
 		return err
@@ -39,7 +39,7 @@ func (ct *ConcurrentTaskExecutor) Stop(ctx context.Context) error {
 	return nil
 }
 
-// NewConcurretTaskExecutor .
+// NewConcurretTaskExecutor creates concurrent task processor.
 func NewConcurretTaskExecutor(settings *config.TasksSettings,
 	logger log.Logger,
 	taskResultConsumer runner.Consumer) *ConcurrentTaskExecutor {

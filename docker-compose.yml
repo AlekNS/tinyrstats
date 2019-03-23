@@ -13,5 +13,24 @@ services:
       network:
         aliases:
           - tinyrstats
+    environment:
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
+      JAEGER_AGENT_HOST: jaeger
+      JAEGER_AGENT_PORT: 6831
     ports:
       - 18080:8080
+      - 18081:8081
+
+  backend-jaeger:
+    image: jaegertracing/all-in-one:1.10
+    restart: always
+    networks:
+      network:
+        aliases:
+          - jaeger
+    environment:
+      COLLECTOR_ZIPKIN_HTTP_PORT: 9411
+    ports:
+      - 16831:6831/udp
+      - 16686:16686

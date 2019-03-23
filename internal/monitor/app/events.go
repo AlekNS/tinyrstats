@@ -5,29 +5,33 @@ import (
 	"github.com/alekns/tinyrstats/pkg/helpers/subscribs"
 )
 
+// eventsImpl implementation of Events
 type eventsImpl struct {
-	taskQueriedByURL subscribs.EventHandler
+	taskQueriedByResource subscribs.EventHandler
 
 	taskQueriedByMinResponse subscribs.EventHandler
 	taskQueriedByMaxResponse subscribs.EventHandler
 }
 
-func (e *eventsImpl) TaskQueriedByURL() subscribs.EventHandler {
-	return e.taskQueriedByURL
+// TaskQueriedByResource .
+func (e *eventsImpl) TaskQueriedByResource() subscribs.EventHandler {
+	return e.taskQueriedByResource
 }
 
+// TaskQueriedByMinResponse .
 func (e *eventsImpl) TaskQueriedByMinResponse() subscribs.EventHandler {
 	return e.taskQueriedByMinResponse
 }
 
+// TaskQueriedByMaxResponse .
 func (e *eventsImpl) TaskQueriedByMaxResponse() subscribs.EventHandler {
 	return e.taskQueriedByMaxResponse
 }
 
-// NewSyncEventsImpl creates sync events
+// NewSyncEventsImpl creates sync events.
 func NewSyncEventsImpl() monitor.Events {
 	return &eventsImpl{
-		taskQueriedByURL: subscribs.NewSyncEventHandler(),
+		taskQueriedByResource: subscribs.NewSyncEventHandler(),
 
 		taskQueriedByMinResponse: subscribs.NewSyncEventHandler(),
 		taskQueriedByMaxResponse: subscribs.NewSyncEventHandler(),

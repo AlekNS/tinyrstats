@@ -8,13 +8,17 @@ import (
 
 // ConcurrentProcessor implements processing of tasks in concurrency mode.
 type ConcurrentProcessor struct {
-	mtx           sync.Mutex
-	waitConsumers sync.WaitGroup
+	mtx               sync.Mutex
+	waitConsumersStop sync.WaitGroup
 
+	// enqueueLimiter using for backpressure behavior
 	enqueueLimiter int32
-	enqueueCount   int32
+	// enqueueLimiter specified count of current tasks
+	enqueueCount int32
 
-	consumersCount    int
+	// consumersCount is goroutine count
+	consumersCount int
+	// consumerQueueSize is channel buffer size
 	consumerQueueSize int
 
 	consumerQueueCh chan interface{}
@@ -60,7 +64,7 @@ func (p *ConcurrentProcessor) Start(ctx context.Context, consumer Consumer, erro
 	p.stopProcessorCh = make(chan struct{})
 	p.isStopped = false
 
-	p.waitConsumers.Add(p.consumersCount)
+	p.waitConsumersStop.Add(p.consumersCount)
 
 	for worker := 0; worker < p.consumersCount; worker++ {
 		go func() {
@@ -81,6 +85,7 @@ func (p *ConcurrentProcessor) Start(ctx context.Context, consumer Consumer, erro
 					err = consumer.Accept(ctx, task)
 					if err != nil {
 						if errors.OnError(err) != nil {
+							// stop processor if any error was propagated
 							p.Stop()
 						}
 					}
@@ -91,7 +96,7 @@ func (p *ConcurrentProcessor) Start(ctx context.Context, consumer Consumer, erro
 				}
 			}
 
-			p.waitConsumers.Done()
+			p.waitConsumersStop.Done()
 		}()
 	}
 
@@ -100,7 +105,7 @@ func (p *ConcurrentProcessor) Start(ctx context.Context, consumer Consumer, erro
 
 // Wait until all workers will be stopped.
 func (p *ConcurrentProcessor) Wait() {
-	p.waitConsumers.Wait()
+	p.waitConsumersStop.Wait()
 }
 
 // NewConcurrentProcessor create concurrent processor.

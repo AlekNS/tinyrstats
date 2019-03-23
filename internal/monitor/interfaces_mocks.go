@@ -212,16 +212,16 @@ func (m *MockEvents) EXPECT() *MockEventsMockRecorder {
 	return m.recorder
 }
 
-// TaskQueriedByURL mocks base method
-func (m *MockEvents) TaskQueriedByURL() subscribs.EventHandler {
-	ret := m.ctrl.Call(m, "TaskQueriedByURL")
+// TaskQueriedByResource mocks base method
+func (m *MockEvents) TaskQueriedByResource() subscribs.EventHandler {
+	ret := m.ctrl.Call(m, "TaskQueriedByResource")
 	ret0, _ := ret[0].(subscribs.EventHandler)
 	return ret0
 }
 
-// TaskQueriedByURL indicates an expected call of TaskQueriedByURL
-func (mr *MockEventsMockRecorder) TaskQueriedByURL() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TaskQueriedByURL", reflect.TypeOf((*MockEvents)(nil).TaskQueriedByURL))
+// TaskQueriedByResource indicates an expected call of TaskQueriedByResource
+func (mr *MockEventsMockRecorder) TaskQueriedByResource() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TaskQueriedByResource", reflect.TypeOf((*MockEvents)(nil).TaskQueriedByResource))
 }
 
 // TaskQueriedByMinResponse mocks base method

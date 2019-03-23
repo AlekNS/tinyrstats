@@ -6,7 +6,7 @@ import (
 	"github.com/alekns/tinyrstats/internal/monitor"
 )
 
-// ScheduleTasksSlice .
+// ScheduleTasksSlice gets slice of tasks and launch it.
 func ScheduleTasksSlice(ctx context.Context,
 	taskApp monitor.TaskApp, items []*monitor.ScheduleHealthTask) error {
 

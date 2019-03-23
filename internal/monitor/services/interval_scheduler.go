@@ -29,6 +29,7 @@ type (
 
 	// IntervalScheduler is used to schedule task periodically.
 	// Each task can have an individual interval.
+	// Each intervalScheduleItems use own goroutine and heap.
 	IntervalScheduler struct {
 		// consumer receives a scheduled task
 		consumer runner.Consumer
@@ -86,7 +87,7 @@ func (si *intervalScheduleItems) FindIndex(id string) int {
 	return -1
 }
 
-// Start starts workers.
+// Start workers.
 func (st *IntervalScheduler) Start(ctx context.Context) error {
 	st.waitWorkers.Add(st.settings.MaxConcurrency)
 
@@ -148,7 +149,7 @@ func (st *IntervalScheduler) Stop(ctx context.Context) error {
 	return nil
 }
 
-// Schedule enqueue of task.
+// Schedule .
 func (st *IntervalScheduler) Schedule(ctx context.Context, taskID monitor.TaskID, args *monitor.ScheduleHealthTask) error {
 	logger := log.With(st.logger, "method", "Schedule", "taskId", taskID)
 
@@ -190,7 +191,7 @@ func (st *IntervalScheduler) remove(taskID monitor.TaskID, workerIndex int) erro
 	return monitor.ErrTaskNotFound
 }
 
-// Cancel stops a task.
+// Cancel .
 func (st *IntervalScheduler) Cancel(ctx context.Context, taskID monitor.TaskID) error {
 	logger := log.With(st.logger, "method", "Cancel", "taskId", taskID)
 
@@ -204,7 +205,7 @@ func (st *IntervalScheduler) Cancel(ctx context.Context, taskID monitor.TaskID) 
 	return st.remove(taskID, workerIndex)
 }
 
-// CancelAll stops all tasks.
+// CancelAll .
 func (st *IntervalScheduler) CancelAll(ctx context.Context) error {
 	logger := log.With(st.logger, "method", "CancelAll")
 

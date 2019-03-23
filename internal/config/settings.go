@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Settings .
+// Settings gathering all application settings.
 type Settings struct {
 	Logger    *LoggerSettings
 	Tasks     *TasksSettings
@@ -13,7 +13,7 @@ type Settings struct {
 	Endpoints *EndpointsSettings
 }
 
-// GetSettings .
+// GetSettings reads all from config file and env.
 func GetSettings(viper *viper.Viper) *Settings {
 	return &Settings{
 		Logger:    FromViperLoggerSettings(viper),

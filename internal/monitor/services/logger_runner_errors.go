@@ -18,7 +18,7 @@ func (le *loggerRunnerErrors) OnError(err error) error {
 	return nil // don't propagate error
 }
 
-// NewLoggerRunnerException .
+// NewLoggerRunnerException simple logs to logger and mute error (don't propagate).
 func NewLoggerRunnerException(logger log.Logger,
 	serviceName string) runner.ErrorHandler {
 

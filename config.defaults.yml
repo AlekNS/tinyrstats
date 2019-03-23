@@ -1,6 +1,6 @@
 logging:
   console:
-    level: debug
+    level: info
 
 scheduler:
   defaults:

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/alekns/tinyrstats/internal"
 	"github.com/alekns/tinyrstats/internal/monitor"
 	"github.com/go-kit/kit/metrics"
 	kitprometheus "github.com/go-kit/kit/metrics/prometheus"
@@ -36,17 +37,17 @@ func (mw *metricsTaskAppDecorator) QueryBy(ctx context.Context, query *monitor.Q
 	return mw.origInstance.QueryBy(ctx, query)
 }
 
-// WrapMetricsTaskApp .
+// WrapMetricsTaskApp is wrapper for TaskApp metrics.
 func WrapMetricsTaskApp(instance monitor.TaskApp) monitor.TaskApp {
 	return &metricsTaskAppDecorator{
 		createAndRunCount: kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
-			Namespace: "monitor",
+			Namespace: internal.ServiceName,
 			Subsystem: "task_app",
 			Name:      "createandrun_count",
 			Help:      "Number of TaskApp.CreateAndRun requests.",
 		}, []string{"method", "error"}),
 		queryByCount: kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
-			Namespace: "monitor",
+			Namespace: internal.ServiceName,
 			Subsystem: "task_app",
 			Name:      "queryby_count",
 			Help:      "Number of TaskApp.QueryBy requests.",

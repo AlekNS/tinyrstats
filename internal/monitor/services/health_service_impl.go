@@ -86,7 +86,7 @@ func (rh *HTTPHealthService) CheckStatus(ctx context.Context, request *monitor.H
 	return status, nil
 }
 
-// NewHTTPHealthService .
+// NewHTTPHealthService creates HTTP resource health checker.
 func NewHTTPHealthService(settings *config.TasksSettings, logger log.Logger) *HTTPHealthService {
 	return &HTTPHealthService{
 		settings: settings,

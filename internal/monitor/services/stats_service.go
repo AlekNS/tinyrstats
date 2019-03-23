@@ -16,11 +16,12 @@ type statsServiceImpl struct {
 	buckets      []statsBucket
 	mtxs         []sync.RWMutex
 
+	// callResponseMax counts calls for taskApp.Max queries
 	callResponseMax int32
+	// callResponseMin counts calls for taskApp.Min queries
 	callResponseMin int32
 }
 
-// init .
 func (si *statsServiceImpl) init() *statsServiceImpl {
 	si.mtxs = make([]sync.RWMutex, si.bucketsCount)
 	si.buckets = make([]statsBucket, si.bucketsCount)
@@ -78,7 +79,7 @@ func (si *statsServiceImpl) DeleteHost(host string) {
 	si.mtxs[bucketIndex].Unlock()
 }
 
-// NewStatsServiceImpl .
+// NewStatsServiceImpl creates simple buckets storage.
 func NewStatsServiceImpl(settings *config.StatsSettings) monitor.StatsService {
 	instance := &statsServiceImpl{
 		bucketsCount: settings.BucketsCount,

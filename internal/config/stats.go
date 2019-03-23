@@ -2,8 +2,9 @@ package config
 
 import "github.com/spf13/viper"
 
-// StatsSettings .
+// StatsSettings configure stats application.
 type StatsSettings struct {
+	// BucketsCount need to increase access concurrency.
 	BucketsCount int
 }
 

@@ -10,13 +10,18 @@ import (
 	"github.com/go-kit/kit/log"
 )
 
-// Registry .
+// Registry factory of services and applications.
 type Registry interface {
+	// Events get service.
 	Events() monitor.Events
+	// TaskRepository get service.
 	TaskRepository() monitor.TaskRepository
+	// ScheduleTaskService get service.
 	ScheduleTaskService() monitor.ScheduleTaskService
 
+	// TaskApp get application.
 	TaskApp() monitor.TaskApp
+	// StatsApp get application.
 	StatsApp() monitor.StatsApp
 }
 
@@ -81,7 +86,7 @@ func (app *RegistryImpl) init(
 	return app
 }
 
-// Start .
+// Start is method to start necessary services.
 func (app *RegistryImpl) Start(ctx context.Context) error {
 	err := app.taskConsumer.Start(ctx)
 	if err != nil {
@@ -97,9 +102,9 @@ func (app *RegistryImpl) Start(ctx context.Context) error {
 	return nil
 }
 
-// Stop .
+// Stop necessary services.
 func (app *RegistryImpl) Stop(ctx context.Context) error {
-	app.events.TaskQueriedByURL().OffAll()
+	app.events.TaskQueriedByResource().OffAll()
 	app.events.TaskQueriedByMinResponse().OffAll()
 	app.events.TaskQueriedByMaxResponse().OffAll()
 	app.scheduler.Stop(ctx)
@@ -108,7 +113,7 @@ func (app *RegistryImpl) Stop(ctx context.Context) error {
 	return nil
 }
 
-// NewRegistryImpl .
+// NewRegistryImpl creates default registry.
 func NewRegistryImpl(settings *config.Settings, logger log.Logger) *RegistryImpl {
 	instance := &RegistryImpl{}
 	return instance.init(settings, logger)

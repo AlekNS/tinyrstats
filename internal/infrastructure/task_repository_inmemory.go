@@ -23,7 +23,9 @@ type (
 		mtxs    []sync.RWMutex
 		buckets []taskByIDBucket
 
+		// store most minimal response time
 		minResponseTask atomic.Value
+		// store most maximal response time
 		maxResponseTask atomic.Value
 	}
 )
@@ -44,7 +46,6 @@ func cloneTask(src *monitor.Task) *monitor.Task {
 	return dst
 }
 
-// GetByResponseTimeMinOrMax .
 func (tr *taskRepositoryInMemoryImpl) GetByResponseTimeMinOrMax(ctx context.Context, isNeedMax bool) (*monitor.Task, error) {
 	var task *monitor.Task
 
@@ -109,18 +110,23 @@ func (tr *taskRepositoryInMemoryImpl) updateMinMaxResponseTasks(task *monitor.Ta
 	}
 
 	if isUpdate {
+		if !isTaskValidForStats(task) {
+			return
+		}
+
 		minTask := tr.minResponseTask.Load().(*monitor.Task)
-		maxTask := tr.maxResponseTask.Load().(*monitor.Task)
 		if minTask == nilResponseTask {
 			tr.minResponseTask.Store(task)
 		}
+		if minTask.Status != nil && minTask.Status.ResponseTime > task.Status.ResponseTime {
+			tr.minResponseTask.Store(task)
+		}
+
+		maxTask := tr.maxResponseTask.Load().(*monitor.Task)
 		if maxTask == nilResponseTask {
 			tr.maxResponseTask.Store(task)
 		}
-		if isTaskValidForStats(minTask) && minTask.Status.ResponseTime > task.Status.ResponseTime {
-			tr.minResponseTask.Store(task)
-		}
-		if isTaskValidForStats(maxTask) && maxTask.Status.ResponseTime < task.Status.ResponseTime {
+		if maxTask.Status != nil && maxTask.Status.ResponseTime < task.Status.ResponseTime {
 			tr.maxResponseTask.Store(task)
 		}
 		return
@@ -144,7 +150,6 @@ func (tr *taskRepositoryInMemoryImpl) updateMinMaxResponseTasks(task *monitor.Ta
 	if statTaskIndex > 0 {
 		for _, bucket := range tr.buckets {
 			for _, task := range bucket {
-				// @TODO: || task.Status.Error != nil
 				if !isTaskValidForStats(task) {
 					continue
 				}

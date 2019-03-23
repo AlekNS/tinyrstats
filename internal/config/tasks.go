@@ -2,14 +2,19 @@ package config
 
 import "github.com/spf13/viper"
 
-// TasksSettings .
+// TasksSettings configure tasks.
 type TasksSettings struct {
+	// DefaultTimeout is used when timeout for task was not specified.
 	DefaultTimeout int
 
-	MaxPending     int
-	TaskQueueSize  int
+	// MaxPending is task count that could be in pending.
+	MaxPending int
+	// TaskQueueSize is buffer channel size.
+	TaskQueueSize int
+	// MaxConcurrency is count of concurrent workers.
 	MaxConcurrency int
 
+	// RepositoryBucketsCount need to increase concurrency.
 	RepositoryBucketsCount int
 }
 

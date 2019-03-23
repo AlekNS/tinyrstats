@@ -21,7 +21,7 @@ func ConfigureViper(svcName, configName string, cmd *cobra.Command, viper *viper
 
 	var err = viper.ReadInConfig()
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 
 	return viper

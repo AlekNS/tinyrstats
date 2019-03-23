@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	opentracing "github.com/opentracing/opentracing-go"
 
 	"github.com/alekns/tinyrstats/internal/config"
 	"github.com/alekns/tinyrstats/internal/monitor"
@@ -20,7 +21,10 @@ type statsAppImpl struct {
 
 // QueryBy .
 func (sa *statsAppImpl) QueryBy(ctx context.Context, query *monitor.QueryCallStatistic) (*monitor.QueryCallStatisticResult, error) {
-	logger := log.With(sa.logger, "method", "QueryBy")
+	span, _ := opentracing.StartSpanFromContext(ctx, "QueryBy")
+	defer span.Finish()
+
+	logger := log.With(sa.logger, "method", "request statistic")
 
 	level.Debug(logger).Log("msg", "QueryBy")
 
@@ -30,6 +34,8 @@ func (sa *statsAppImpl) QueryBy(ctx context.Context, query *monitor.QueryCallSta
 	for _, value := range allHosts {
 		totalHosts += value
 	}
+
+	span.SetTag("total_resources", totalHosts)
 
 	return &monitor.QueryCallStatisticResult{
 		TotalCount:       totalHosts,
@@ -47,7 +53,7 @@ func newStatsApp(settings *config.Settings,
 	hostHandler := func(args ...interface{}) {
 		statsService.AddHost(args[0].(string), 1)
 	}
-	events.TaskQueriedByURL().On(&hostHandler)
+	events.TaskQueriedByResource().On(&hostHandler)
 
 	minHandler := func(args ...interface{}) {
 		statsService.AddMinMax(false, 1)

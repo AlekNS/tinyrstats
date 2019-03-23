@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"github.com/alekns/tinyrstats/internal"
 	"github.com/alekns/tinyrstats/internal/presentation/cmds"
 )
 
@@ -14,7 +15,7 @@ import (
 const ResourceStatsVersion = "0.0.1"
 
 var mainCommand = &cobra.Command{
-	Use:     "tinyrstats",
+	Use:     internal.ServiceName,
 	Short:   "Tiny Resource Statistics is a service for resource monitoring and gathering of some statistics",
 	Version: ResourceStatsVersion}
 

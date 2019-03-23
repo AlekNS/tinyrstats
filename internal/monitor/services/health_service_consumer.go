@@ -25,7 +25,7 @@ func (ct *healthServiceConsumer) Accept(ctx context.Context, results ...interfac
 	return ct.requestResponseConsumer.Accept(ctx, results[0], result)
 }
 
-// NewHealthServiceConsumer .
+// NewHealthServiceConsumer accepts task, check error and return result.
 func NewHealthServiceConsumer(healthService monitor.HealthService,
 	requestResponseConsumer runner.Consumer) runner.Consumer {
 	return &healthServiceConsumer{

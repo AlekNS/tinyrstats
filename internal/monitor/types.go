@@ -21,6 +21,9 @@ type (
 
 		Timeout int64 `json:"timeout"`
 
+		// HTTP part
+		// @TODO: use sub-structure for possible customization.
+
 		URL     string      `json:"url"`
 		Method  string      `json:"method"`
 		Body    string      `json:"body,omitempty"`
@@ -34,6 +37,8 @@ type (
 		LastTime     int64 `json:"lastTime"`
 		ResponseTime int64 `json:"responseTime,omitempty"`
 
+		// HTTP part
+		// @TODO: use sub-structure for possible customization.
 		StatusCode int         `json:"statusCode,omitempty"`
 		Headers    http.Header `json:"responseHeaders,omitempty"`
 	}
@@ -52,7 +57,7 @@ type (
 		Task     *HealthTask `json:"task"`
 	}
 
-	// Applications
+	// Applications DTO
 
 	// CreateTaskCommand .
 	CreateTaskCommand struct {

@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/alekns/tinyrstats/internal"
 	"github.com/alekns/tinyrstats/internal/config"
 	"github.com/alekns/tinyrstats/internal/helpers/tasks"
 	"github.com/alekns/tinyrstats/internal/helpers/tracer"
@@ -51,7 +52,7 @@ func serveCommand() *cobra.Command {
 			// Prepare settings and Configure logger
 			//
 			settings := config.GetSettings(
-				cmdhelper.ConfigureViper("tinyrstats", "config", cmd, viper.GetViper()))
+				cmdhelper.ConfigureViper(internal.ServiceName, "config", cmd, viper.GetViper()))
 
 			var logger log.Logger = log.NewLogfmtLogger(os.Stdout)
 			logger = monlog.SetLevelLogger(logger, settings.Logger.ConsoleLevel)
@@ -59,7 +60,7 @@ func serveCommand() *cobra.Command {
 			//
 			// Init tracer (if configured through env)
 			//
-			tracer, close, err := tracer.NewJaeger(logger, "tinyrstats")
+			tracer, close, err := tracer.NewJaeger(logger, internal.ServiceName)
 			if err != nil {
 				panic(fmt.Sprintf("tracer failed to initialize: %s", err.Error()))
 			}

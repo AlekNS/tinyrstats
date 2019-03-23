@@ -1,8 +1,8 @@
 package monitor
 
 const (
-	// QueryResponseMinTime .
+	// QueryResponseMinTime is used for query minimize response time.
 	QueryResponseMinTime QueryResponseTimeType = iota
-	// QueryResponseMaxTime .
+	// QueryResponseMaxTime is used for query maximize response time.
 	QueryResponseMaxTime
 )

@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	opentracing "github.com/opentracing/opentracing-go"
 
 	"github.com/alekns/tinyrstats/internal/config"
 	"github.com/alekns/tinyrstats/internal/monitor"
@@ -24,7 +25,7 @@ type taskAppImpl struct {
 func (ta *taskAppImpl) CreateAndRun(ctx context.Context, req *monitor.CreateTaskCommand) (*monitor.CreateTaskResult, error) {
 	logger := log.With(ta.logger, "method", "Create")
 
-	level.Debug(logger).Log("msg", "CreateAndRun")
+	level.Debug(logger).Log("msg", "create task", "url", req.Task.URL)
 
 	// @TODO: For simplicity, but should be used hash.
 	parsedURL, err := url.Parse(req.Task.URL)
@@ -52,6 +53,8 @@ func (ta *taskAppImpl) CreateAndRun(ctx context.Context, req *monitor.CreateTask
 		Headers: req.Task.Headers,
 	}
 
+	level.Debug(logger).Log("msg", "schedule task")
+
 	if err := ta.scheduler.Schedule(ctx, taskID, &monitor.ScheduleHealthTask{
 		Interval: 0,
 		Task:     task,
@@ -66,29 +69,60 @@ func (ta *taskAppImpl) CreateAndRun(ctx context.Context, req *monitor.CreateTask
 
 // GetStatus .
 func (ta *taskAppImpl) QueryBy(ctx context.Context, query *monitor.QueryTask) (*monitor.QueryTaskResult, error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "QueryBy")
+	defer span.Finish()
+
+	logger := log.With(ta.logger, "method", "QueryBy")
+
 	if len(query.ByHost) > 0 {
+		level.Debug(logger).Log("msg", "query by resource")
+
+		span.SetTag("type", "resource")
+
 		task, err := ta.taskRepository.GetByID(ctx, monitor.TaskID(query.ByHost))
 		if err != nil {
+			span.LogEvent("not_found")
 			return nil, err
 		}
 
-		ta.events.TaskQueriedByURL().Emit(string(task.ID))
+		span.SetTag("resource", string(task.ID))
+
+		ta.events.TaskQueriedByResource().Emit(string(task.ID))
+
+		span.LogEvent("response")
 
 		return &monitor.QueryTaskResult{
 			Task: *task,
 		}, nil
 	}
 
-	task, err := ta.taskRepository.GetByResponseTimeMinOrMax(ctx, query.ByResponseTime == monitor.QueryResponseMaxTime)
+	isMaxQueried := query.ByResponseTime == monitor.QueryResponseMaxTime
+
+	if isMaxQueried {
+		level.Debug(logger).Log("msg", "query by max response time")
+
+		span.SetTag("type", "max")
+	} else {
+		level.Debug(logger).Log("msg", "query by min response time")
+
+		span.SetTag("type", "min")
+	}
+
+	task, err := ta.taskRepository.GetByResponseTimeMinOrMax(ctx, isMaxQueried)
 	if err != nil {
+		span.LogEvent("not_found")
 		return nil, err
 	}
 
-	if query.ByResponseTime == monitor.QueryResponseMaxTime {
+	span.SetTag("resource", string(task.ID))
+
+	if isMaxQueried {
 		ta.events.TaskQueriedByMaxResponse().Emit(string(task.ID))
 	} else {
 		ta.events.TaskQueriedByMinResponse().Emit(string(task.ID))
 	}
+
+	span.LogEvent("response")
 
 	return &monitor.QueryTaskResult{
 		Task: *task,

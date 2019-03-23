@@ -36,11 +36,11 @@ func BootstrapAndServe(rootContext context.Context,
 	metricsHandler.Handle("/metrics", promhttp.Handler())
 
 	// Init endpoints
-	endpointSet := endpoints.NewSet(settings.Endpoints, logger, registry)
+	endpointSet := endpoints.NewSet(settings.Endpoints, rootLogger, registry)
 
 	// HTTP transport
 	httpHandlers := mux.NewRouter()
-	webhttp.SetupHTTPServerHandlers(logger, httpHandlers.PathPrefix("/api/v1"), endpointSet)
+	webhttp.SetupHTTPServerHandlers(rootLogger, httpHandlers.PathPrefix("/api/v1"), endpointSet)
 	httpServer := &http.Server{
 		Addr:    settings.Endpoints.HTTPBind,
 		Handler: httpHandlers,
@@ -70,7 +70,6 @@ func BootstrapAndServe(rootContext context.Context,
 			level.Info(logger).Log("msg", "catch context cancellation")
 			return rootContext.Err()
 		}
-		return nil
 	}, func(error) {})
 
 	// Run and Serve

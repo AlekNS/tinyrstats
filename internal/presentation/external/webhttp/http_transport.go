@@ -2,10 +2,11 @@ package webhttp
 
 import (
 	"context"
-	"errors"
+	"encoding/json"
 	"net/http"
 
 	"github.com/alekns/tinyrstats/internal/monitor"
+	"github.com/pkg/errors"
 
 	"github.com/alekns/tinyrstats/internal/presentation/external/endpoints"
 	"github.com/go-kit/kit/log"
@@ -13,11 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type httpServerTransport struct {
-	checkStatus http.Handler
-}
-
-// SetupHTTPServerHandlers .
+// SetupHTTPServerHandlers pre-fill router by endpoints.
 func SetupHTTPServerHandlers(logger log.Logger,
 	route *mux.Route,
 	endpointsSet *endpoints.Set) {
@@ -26,6 +23,7 @@ func SetupHTTPServerHandlers(logger log.Logger,
 
 	options := []httptransport.ServerOption{
 		httptransport.ServerErrorLogger(logger),
+		httptransport.ServerErrorEncoder(encodeErrorResponse),
 	}
 
 	router.Methods("GET").Path("/tasks/actions/query").Handler(httptransport.NewServer(
@@ -43,27 +41,50 @@ func SetupHTTPServerHandlers(logger log.Logger,
 	))
 }
 
-func decodeQueryTaskRequest(_ context.Context, req *http.Request) (request interface{}, err error) {
+func encodeErrorResponse(ctx context.Context, err error, w http.ResponseWriter) {
+	if err == nil {
+		panic("abnormal error content, encodeErrorResponse with nil error")
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	statusCode := http.StatusBadRequest
+	switch err {
+	case monitor.ErrTaskNotFound:
+		statusCode = http.StatusNotFound
+	default:
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"statusCode": statusCode,
+		"error":      err.Error(),
+	})
+}
+
+func decodeQueryTaskRequest(ctx context.Context, req *http.Request) (request interface{}, err error) {
 	values := req.URL.Query()
+
+	const kresponsetime = "responsetime"
+
+	// Validate parameters
 	host := values.Get("resource")
-	responseTime := values.Get("responsetime")
+	responseTime := values.Get(kresponsetime)
 
 	if len(host) == 0 && len(responseTime) == 0 {
-		return nil, errors.New("no params")
+		return nil, ErrNoParameters
 	}
 
 	if len(host) != 0 && len(responseTime) != 0 {
-		return nil, errors.New("only one request supported")
+		return nil, ErrTooManyParameters
 	}
 
 	responseTimeType := monitor.QueryResponseMinTime
 	if len(responseTime) != 0 {
-		switch values.Get("responsetime") {
+		switch responseTime {
 		case "max":
 			responseTimeType = monitor.QueryResponseMaxTime
 		case "min":
 		default:
-			return nil, errors.New("only min max supported")
+			return nil, errors.Wrap(ErrInvalidParameterValue, kresponsetime+" support only min or max")
 		}
 	}
 
@@ -73,6 +94,6 @@ func decodeQueryTaskRequest(_ context.Context, req *http.Request) (request inter
 	}, nil
 }
 
-func decodeStatisticsQueryRequest(_ context.Context, req *http.Request) (request interface{}, err error) {
+func decodeStatisticsQueryRequest(ctx context.Context, req *http.Request) (request interface{}, err error) {
 	return &monitor.QueryCallStatistic{}, nil
 }

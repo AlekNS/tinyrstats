@@ -1,5 +1,7 @@
 package subscribs
 
+//go:generate mockgen -source=interfaces.go -package=subscribs -destination=interfaces_mocks.go
+
 type (
 	// EventHandler .
 	EventHandler interface {

@@ -21,5 +21,5 @@ USER tinyrstats
 COPY --from=builder /home/tinyrstats/bin/tinyrstats .
 
 EXPOSE 8080
-ENTRYPOINT ["/entrypoint.sh", "tinyrstats"]
+ENTRYPOINT ["/entrypoint.sh", "/home/tinyrstats/tinyrstats"]
 CMD ["monitor", "serve", "--preload-from-file", "./sites.example.txt"]

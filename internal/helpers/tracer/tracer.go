@@ -10,7 +10,7 @@ import (
 	logkit "github.com/uber/jaeger-lib/client/log/go-kit"
 )
 
-// NewJaeger .
+// NewJaeger initializes jarger tracer.
 func NewJaeger(logger log.Logger, serviceName string) (opentracing.Tracer, io.Closer, error) {
 	cfg, err := jaegerconfig.FromEnv()
 

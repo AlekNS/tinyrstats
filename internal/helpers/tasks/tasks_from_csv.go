@@ -11,7 +11,7 @@ import (
 )
 
 // ReadTasksFromCsvFile reads and creates tasks from csv file.
-func ReadTasksFromCsvFile(protocol, filePath string) ([]*monitor.ScheduleHealthTask, error) {
+func ReadTasksFromCsvFile(defaultProtocol, filePath string) ([]*monitor.ScheduleHealthTask, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,8 @@ func ReadTasksFromCsvFile(protocol, filePath string) ([]*monitor.ScheduleHealthT
 		results = append(results, &monitor.ScheduleHealthTask{
 			Interval: 0,
 			Task: &monitor.HealthTask{
-				URL:    fmt.Sprintf("%s://%s", protocol, row[0]),
+				// @TODO: add defaultProtocol prefix in file or csv with two columns!?
+				URL:    fmt.Sprintf("%s://%s", defaultProtocol, row[0]),
 				Method: "GET",
 			},
 		})
