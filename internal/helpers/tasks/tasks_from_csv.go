@@ -5,7 +5,9 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
+	"strings"
 
 	"github.com/alekns/tinyrstats/internal/monitor"
 )
@@ -19,8 +21,8 @@ func ReadTasksFromCsvFile(defaultProtocol, filePath string) ([]*monitor.Schedule
 	defer f.Close()
 
 	results := make([]*monitor.ScheduleHealthTask, 0)
-
 	csvReader := csv.NewReader(bufio.NewReader(f))
+	csvReader.Comma = ';'
 	for {
 		row, err := csvReader.Read()
 		if err == io.EOF {
@@ -38,11 +40,24 @@ func ReadTasksFromCsvFile(defaultProtocol, filePath string) ([]*monitor.Schedule
 			continue
 		}
 
+		parsedURL, err := url.Parse(row[0])
+		if err != nil {
+			return nil, fmt.Errorf("invalid resource format: %v: %v", row[0], err)
+		}
+
+		if len(parsedURL.Scheme) == 0 {
+			parsedURL.Scheme = defaultProtocol
+		}
+
+		if !strings.HasPrefix(parsedURL.String(), "http://") &&
+			!strings.HasPrefix(parsedURL.String(), "https://") {
+			return nil, fmt.Errorf("invalid resource row: %v", row[0])
+		}
+
 		results = append(results, &monitor.ScheduleHealthTask{
 			Interval: 0,
 			Task: &monitor.HealthTask{
-				// @TODO: add defaultProtocol prefix in file or csv with two columns!?
-				URL:    fmt.Sprintf("%s://%s", defaultProtocol, row[0]),
+				URL:    parsedURL.String(),
 				Method: "GET",
 			},
 		})

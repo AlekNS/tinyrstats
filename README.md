@@ -53,9 +53,10 @@ For host: `$ ./bin/tinyrstats --config-file ./config.defaults.yml serve --preloa
 You may override config by environment variables. Set logging level for example,
 for host: `$ TRS_LOGGING_CONSOLE_LEVEL=debug ./bin/tinyrstats --config-file ./config.defaults.yml serve --preload-from-file sites.example.txt`
 
-Use `--default-protocol` to select between `http` and `https`.
+Use `--default-protocol` to select between `http` and `https` (override by individual).
+You could customize individual protocol in sites.example.txt by prefix `http://` or `https://`.
 
-To enable tracing (in docker-compose enabled by default) for 
+To enable tracing (in docker-compose enabled by default) for
 host (you should have runned jaeger agent): `$ JAEGER_SAMPLER_TYPE=const JAEGER_SAMPLER_PARAM=1 JAEGER_AGENT_HOST=localhost JAEGER_AGENT_PORT=16831 ./bin/tinyrstats monitor --config-file ./config.defaults.yml serve --preload-from-file ./sites.example.txt`
 
 Docker jaeger is available on **http://localhost:16686/**
