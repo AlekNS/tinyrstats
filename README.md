@@ -50,7 +50,7 @@ Run
 
 For host: `$ ./bin/tinyrstats --config-file ./config.defaults.yml serve --preload-from-file sites.example.txt`
 
-You may override config by environment variables. Set logging level for example
+You may override config by environment variables. Set logging level for example,
 for host: `$ TRS_LOGGING_CONSOLE_LEVEL=debug ./bin/tinyrstats --config-file ./config.defaults.yml serve --preload-from-file sites.example.txt`
 
 Use `--default-protocol` to select between `http` and `https`.

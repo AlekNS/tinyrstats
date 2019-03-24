@@ -35,7 +35,7 @@ func TestTaskExecutorSpec(t *testing.T) {
 		taskExec := NewConcurretTaskExecutor(&config.TasksSettings{
 			MaxConcurrency: 2,
 			MaxPending:     4,
-			TaskQueueSize:  2,
+			QueueSize:      2,
 		}, log.NewNopLogger(), mockConsumer)
 		taskExec.Start(ctx)
 		defer taskExec.Stop(ctx)

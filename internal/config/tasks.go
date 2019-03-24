@@ -9,8 +9,8 @@ type TasksSettings struct {
 
 	// MaxPending is task count that could be in pending.
 	MaxPending int
-	// TaskQueueSize is buffer channel size.
-	TaskQueueSize int
+	// QueueSize is buffer channel size.
+	QueueSize int
 	// MaxConcurrency is count of concurrent workers.
 	MaxConcurrency int
 
@@ -24,7 +24,7 @@ func FromViperTasksSettings(v *viper.Viper) *TasksSettings {
 		kdefaulttimeout = "tasks.defaults.timeout"
 
 		kmaxpending     = "tasks.maxpending"
-		ktaskqueue      = "tasks.taskqueuesize"
+		kqueuesize      = "tasks.queuesize"
 		kmaxconcurrency = "tasks.maxconcurrency"
 
 		krepbuckets = "tasks.repository.bucketscount"
@@ -34,7 +34,7 @@ func FromViperTasksSettings(v *viper.Viper) *TasksSettings {
 	v.SetDefault(kdefaulttimeout, 5000)
 
 	v.SetDefault(kmaxpending, 512)
-	v.SetDefault(ktaskqueue, 256)
+	v.SetDefault(kqueuesize, 256)
 	v.SetDefault(kmaxconcurrency, 128)
 
 	v.SetDefault(krepbuckets, 32)
@@ -46,8 +46,8 @@ func FromViperTasksSettings(v *viper.Viper) *TasksSettings {
 	if v.GetInt(kmaxpending) < 1 {
 		panic(kmaxpending + " has too low value")
 	}
-	if v.GetInt(ktaskqueue) < 1 {
-		panic(ktaskqueue + " has too low value")
+	if v.GetInt(kqueuesize) < 1 {
+		panic(kqueuesize + " has too low value")
 	}
 	if v.GetInt(kmaxconcurrency) < 1 {
 		panic(kmaxconcurrency + " has too low value")
@@ -60,7 +60,7 @@ func FromViperTasksSettings(v *viper.Viper) *TasksSettings {
 		DefaultTimeout: v.GetInt(kdefaulttimeout),
 
 		MaxPending:     v.GetInt(kmaxpending),
-		TaskQueueSize:  v.GetInt(ktaskqueue),
+		QueueSize:      v.GetInt(kqueuesize),
 		MaxConcurrency: v.GetInt(kmaxconcurrency),
 
 		RepositoryBucketsCount: v.GetInt(krepbuckets),

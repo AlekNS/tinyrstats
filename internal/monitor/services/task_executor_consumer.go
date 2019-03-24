@@ -49,7 +49,7 @@ func NewConcurretTaskExecutor(settings *config.TasksSettings,
 	return &ConcurrentTaskExecutor{
 		logger: log.With(logger, "service", svcName),
 		processor: runner.NewConcurrentProcessor(
-			settings.TaskQueueSize, settings.MaxConcurrency, settings.MaxPending),
+			settings.QueueSize, settings.MaxConcurrency, settings.MaxPending),
 
 		taskResultConsumer: taskResultConsumer,
 		errorsHandler:      NewLoggerRunnerException(logger, svcName),
