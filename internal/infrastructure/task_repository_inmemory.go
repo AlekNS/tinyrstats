@@ -177,9 +177,8 @@ func (tr *taskRepositoryInMemoryImpl) Delete(ctx context.Context, taskID monitor
 
 	if task, ok := tr.buckets[bucketIndex][taskID]; ok {
 		delete(tr.buckets[bucketIndex], taskID)
-		tr.mtxs[bucketIndex].Unlock()
-
 		tr.updateMinMaxResponseTasks(task, false)
+		tr.mtxs[bucketIndex].Unlock()
 
 		return nil
 	}
