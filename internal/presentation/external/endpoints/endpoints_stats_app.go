@@ -12,6 +12,6 @@ func makeStatisticsQueryEndpoint(registry app.Registry) endpoint.Endpoint {
 	return func(ctx context.Context, reqRaw interface{}) (interface{}, error) {
 		req := reqRaw.(*monitor.QueryCallStatistic)
 		statsApp := registry.StatsApp()
-		return wrapResponseToData(statsApp.QueryBy(ctx, req))
+		return statsApp.QueryBy(ctx, req)
 	}
 }

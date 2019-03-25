@@ -29,14 +29,14 @@ func SetupHTTPServerHandlers(logger log.Logger,
 	router.Methods("GET").Path("/tasks/actions/query").Handler(httptransport.NewServer(
 		endpointsSet.TaskQuery,
 		decodeQueryTaskRequest,
-		httptransport.EncodeJSONResponse,
+		encodeResponseWrapData,
 		options...,
 	))
 
 	router.Methods("GET").Path("/statistics/tasks/queries").Handler(httptransport.NewServer(
 		endpointsSet.StatisticsQuery,
 		decodeStatisticsQueryRequest,
-		httptransport.EncodeJSONResponse,
+		encodeResponseWrapData,
 		options...,
 	))
 }
