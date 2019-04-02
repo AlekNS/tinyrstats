@@ -27,23 +27,28 @@ func TestEventHandlerOffAndEmit(t *testing.T) {
 	evh := NewSyncEventHandler()
 	counter := 0
 
-	handler := func(val ...interface{}) {
+	handler1 := func(val ...interface{}) {
 		counter += val[0].(int)
 	}
 
-	if err := evh.Off(&handler); err != ErrHandlerNotFound {
+	handler2 := func(val ...interface{}) {
+		counter += val[0].(int)+1
+	}
+
+	if err := evh.Off(&handler1); err != ErrHandlerNotFound {
 		t.Error("expected ErrHandlerNotFound, got", err)
 	}
 
-	evh.On(&handler)
+	evh.On(&handler1)
+	evh.On(&handler2)
 
-	if err := evh.Off(&handler); err != nil {
+	if err := evh.Off(&handler1); err != nil {
 		t.Error("expected nil error, got", err)
 	}
 
 	evh.Emit(10)
-	if counter != 0 {
-		t.Error("expected counter to be 0, got", counter)
+	if counter != 11 {
+		t.Error("expected counter to be 11, got", counter)
 	}
 }
 

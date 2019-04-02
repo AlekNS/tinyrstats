@@ -43,8 +43,8 @@ func (o *syncEventHandler) remove(index int) {
 	// order is not matter
 	handlersCount := len(o.handlers)
 	if handlersCount > 1 {
-		lastHandler := o.handlers[handlersCount]
-		o.handlers[index] = lastHandler
+		o.handlers[index] = o.handlers[handlersCount-1]
+		o.handlers[handlersCount-1] = nil
 		o.handlers = o.handlers[:handlersCount-1]
 	} else {
 		o.handlers = []*HandlerOnFunc(nil)
